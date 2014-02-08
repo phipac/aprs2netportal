@@ -8,7 +8,7 @@ class RotateInline(admin.TabularInline):
 
 class ServerAdmin(admin.ModelAdmin):
     list_display = (
-        '__unicode__',
+        'server_id',
         'dns_name',
         'owner',
         'ipv4',
