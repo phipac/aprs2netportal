@@ -82,6 +82,9 @@ class Command(BaseCommand):
             old['city'] = unicode(old['city'], 'latin-1')
             old['email_alerts'] = YES_NULL[old['email_alerts']]
 
+            if old['ipv4'] == "NA":
+                old['ipv4'] = None
+
             if old['ipv6'] == "NA":
                 old['ipv6'] = None
 
