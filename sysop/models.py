@@ -102,7 +102,7 @@ class Rotate(models.Model):
     eligible = models.ManyToManyField(Server, blank=True)
 
     def __unicode__(self):
-        return self.hostname
+        return self.fqdn()
 
     def fqdn(self):
         return '.'.join((self.hostname, str(self.domain)))
