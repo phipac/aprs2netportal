@@ -9,7 +9,7 @@ class RotateInline(admin.TabularInline):
 class ServerAdmin(admin.ModelAdmin):
     list_display = (
         'server_id',
-        'dns_name',
+        'hostname',
         'owner',
         'ipv4',
         'ipv6',

@@ -27,7 +27,7 @@ ROTATES = {
 for key in ('asia', 'aunz', 'china', 'euro', 'fire', 'germany', 'hungary', \
     'japan', 'noam', 'nordic', 'soam', 'swiss'):
     try:
-        ROTATES[key] = Rotate.objects.get(dns_name=key)
+        ROTATES[key] = Rotate.objects.get(hostname=key)
     except:
         print key
         raise
@@ -57,7 +57,7 @@ class Command(BaseCommand):
             "country",
             "city",
             "server_id",
-            "dns_name",
+            "hostname",
             "ipv4",
             "ipv6",
             "regional",

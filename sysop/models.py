@@ -19,8 +19,8 @@ class Server(models.Model):
         related_name="servers_owned")
     server_id = models.CharField(max_length=20, null=True, blank=True,
         help_text="Polled from server")
-    dns_name = models.CharField(max_length=63, verbose_name="DNS name",
-        validators=[dns_validator], help_text="Admin only")
+    hostname = models.CharField(max_length=63, validators=[dns_validator],
+        help_text="Admin only")
     deleted = models.BooleanField(blank=True)
 
     # Owner-editable fields:
@@ -49,36 +49,36 @@ class Server(models.Model):
         help_text="Use this to allow other sysops to edit this server.")
 
     def __unicode__(self):
-        return self.server_id or self.dns_name
+        return self.server_id or self.hostname
 
     def disabled(self):
         return self.deleted or self.out_of_service
 
     def fqdn(self):
-        return "%s.aprs2.net" % self.dns_name
+        return "%s.aprs2.net" % self.hostname
 
     def serialize(self):
         return (self.server_id, {
-            'host': self.dns_name,
+            'host': self.hostname,
             'ipv4': self.ipv4,
             'ipv6': self.ipv6,
             'disabled': self.disabled(),
         })
 
     class Meta:
-        ordering = ['server_id', 'dns_name']
+        ordering = ['server_id', 'hostname']
 
 
 class Rotate(models.Model):
     """Primary and regional rotates."""
-    dns_name = models.CharField(max_length=63, validators=[dns_validator])
+    hostname = models.CharField(max_length=63, validators=[dns_validator])
     eligible = models.ManyToManyField(Server, blank=True)
 
     def __unicode__(self):
-        return self.dns_name
+        return self.hostname
 
     def fqdn(self):
-        return "%s.aprs2.net" % self.dns_name
+        return "%s.aprs2.net" % self.hostname
 
     class Meta:
-        ordering = ['dns_name']
+        ordering = ['hostname']

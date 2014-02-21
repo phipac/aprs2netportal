@@ -16,7 +16,7 @@ def servers_json(request):
 def rotates_json(request):
     return HttpResponse(
         simplejson.dumps(dict([(
-            r.dns_name,
+            r.hostname,
             dict([s.serialize() for s in r.eligible.all()]),
         ) for r in Rotate.objects.all()])),
         content_type="application/json",
