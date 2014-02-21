@@ -100,3 +100,19 @@ class Rotate(models.Model):
 
     class Meta:
         ordering = ['hostname']
+
+
+class ReservedHostname(models.Model):
+    """Reserved hostnames, like ns1, used as a blacklist when naming servers"""
+    hostname = models.CharField(max_length=63, validators=[hostname_validator])
+    domain = models.ForeignKey(Domain)
+
+    def __unicode__(self):
+        return self.fqdn()
+
+    def fqdn(self):
+        return '.'.join((self.hostname, str(self.domain)))
+    fqdn.short_description = "FQDN"
+
+    class Meta:
+        ordering = ['hostname', 'domain']

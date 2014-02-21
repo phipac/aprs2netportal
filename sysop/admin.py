@@ -7,6 +7,7 @@ class RotateInline(admin.TabularInline):
 
 
 admin.site.register(Domain)
+admin.site.register(ReservedHostname)
 
 
 class ServerAdmin(admin.ModelAdmin):
