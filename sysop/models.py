@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 from countries import ISO3166
@@ -81,6 +82,15 @@ class Server(models.Model):
             'disabled': self.disabled(),
         })
 
+    def clean(self):
+        # Don't allow saving a reserved name
+        if ReservedHostname.objects.filter(hostname=self.hostname, domain=self.domain):
+            raise ValidationError("%s is a reserved hostname." % self.fqdn())
+
+        # Don't allow a server to have the same name as a rotate
+        if Rotate.objects.filter(hostname=self.hostname, domain=self.domain):
+            raise ValidationError("%s is a rotate." % self.fqdn())
+
     class Meta:
         ordering = ['server_id', 'hostname']
 
@@ -97,6 +107,15 @@ class Rotate(models.Model):
     def fqdn(self):
         return '.'.join((self.hostname, str(self.domain)))
     fqdn.short_description = "FQDN"
+
+    def clean(self):
+        # Don't allow saving a reserved name
+        if ReservedHostname.objects.filter(hostname=self.hostname, domain=self.domain):
+            raise ValidationError("%s is a reserved hostname." % self.fqdn())
+
+        # Don't allow a rotate to have the same name as a server
+        if Server.objects.filter(hostname=self.hostname, domain=self.domain):
+            raise ValidationError("%s is a server." % self.fqdn())
 
     class Meta:
         ordering = ['hostname']
