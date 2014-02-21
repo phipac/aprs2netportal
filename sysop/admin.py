@@ -24,4 +24,8 @@ class ServerAdmin(admin.ModelAdmin):
 admin.site.register(Server, ServerAdmin)
 
 
-admin.site.register(Rotate)
+class RotateAdmin(admin.ModelAdmin):
+    filter_horizontal = (
+        'eligible',
+    )
+admin.site.register(Rotate, RotateAdmin)
