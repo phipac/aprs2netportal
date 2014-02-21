@@ -6,10 +6,13 @@ class RotateInline(admin.TabularInline):
     model = Rotate.eligible.through
 
 
+admin.site.register(Domain)
+
+
 class ServerAdmin(admin.ModelAdmin):
     list_display = (
         'server_id',
-        'hostname',
+        'fqdn',
         'owner',
         'ipv4',
         'ipv6',
@@ -19,6 +22,7 @@ class ServerAdmin(admin.ModelAdmin):
     list_filter = (
         'deleted',
         'out_of_service',
+        'domain',
     )
     inlines = (RotateInline,)
 admin.site.register(Server, ServerAdmin)

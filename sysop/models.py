@@ -4,10 +4,24 @@ from django.core.validators import RegexValidator
 from countries import ISO3166
 
 
-dns_validator = RegexValidator(
+domain_validator = RegexValidator(
+    regex=r'^(?=^.{4,253}$)(^((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$)$',
+)
+hostname_validator = RegexValidator(
     regex=r'^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$',
     message="Only lowercase letters and numbers are allowed.",
 )
+
+
+class Domain(models.Model):
+    """APRS server domain, e.g., aprs.net, aprs2.net, firenet.us"""
+    domain = models.CharField(max_length=253, validators=[domain_validator])
+
+    def __unicode__(self):
+        return self.domain
+
+    class Meta:
+        ordering = ['domain']
 
 
 class Server(models.Model):
@@ -19,8 +33,9 @@ class Server(models.Model):
         related_name="servers_owned")
     server_id = models.CharField(max_length=20, null=True, blank=True,
         help_text="Polled from server")
-    hostname = models.CharField(max_length=63, validators=[dns_validator],
+    hostname = models.CharField(max_length=63, validators=[hostname_validator],
         help_text="Admin only")
+    domain = models.ForeignKey(Domain)
     deleted = models.BooleanField(blank=True)
 
     # Owner-editable fields:
@@ -55,7 +70,8 @@ class Server(models.Model):
         return self.deleted or self.out_of_service
 
     def fqdn(self):
-        return "%s.aprs2.net" % self.hostname
+        return '.'.join((self.hostname, str(self.domain)))
+    fqdn.short_description = "FQDN"
 
     def serialize(self):
         return (self.server_id, {
@@ -71,14 +87,16 @@ class Server(models.Model):
 
 class Rotate(models.Model):
     """Primary and regional rotates."""
-    hostname = models.CharField(max_length=63, validators=[dns_validator])
+    hostname = models.CharField(max_length=63, validators=[hostname_validator])
+    domain = models.ForeignKey(Domain)
     eligible = models.ManyToManyField(Server, blank=True)
 
     def __unicode__(self):
         return self.hostname
 
     def fqdn(self):
-        return "%s.aprs2.net" % self.hostname
+        return '.'.join((self.hostname, str(self.domain)))
+    fqdn.short_description = "FQDN"
 
     class Meta:
         ordering = ['hostname']
