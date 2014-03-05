@@ -36,7 +36,7 @@ class RotateAdmin(admin.ModelAdmin):
     filter_horizontal = (
         'eligible',
     )
-    list_display = ('__unicode__', 'server_count')
+    list_display = ('__unicode__', 'name', 'server_count')
 
     def queryset(self, request):
         return Rotate.objects.annotate(server_count=Count('eligible'))

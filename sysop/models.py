@@ -97,6 +97,8 @@ class Server(models.Model):
 
 class Rotate(models.Model):
     """Primary and regional rotates."""
+    name = models.CharField(max_length=63, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True)
     hostname = models.CharField(max_length=63, validators=[hostname_validator])
     domain = models.ForeignKey(Domain)
     eligible = models.ManyToManyField(Server, blank=True)
@@ -107,6 +109,13 @@ class Rotate(models.Model):
     def fqdn(self):
         return '.'.join((self.hostname, str(self.domain)))
     fqdn.short_description = "FQDN"
+
+    def serialize(self):
+        return (self.fqdn(), {
+            'name': self.name,
+            'description': self.description,
+            'servers': dict([s.serialize() for s in self.eligible.all()]),
+        })
 
     def clean(self):
         # Don't allow saving a reserved name
