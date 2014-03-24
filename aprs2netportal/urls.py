@@ -7,4 +7,5 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^sysop/', include('sysop.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^APRServe2.txt$', 'sysop.views.server_list'),
 )

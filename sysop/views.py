@@ -26,6 +26,16 @@ def rotates_json(request):
     )
 
 
+def server_list(request):
+    aprs2_servers = Rotate.objects.get(
+        hostname='rotate', domain__domain='aprs2.net').eligible
+    #TODO: support UTF-8 for server locations
+    return render(request, 'sysop/APRServe2.txt', {
+        'rotates': Rotate.objects.filter(regional=True),
+        'servers': aprs2_servers.exclude(deleted=True).order_by('hostname')
+    }, content_type="text/plain")
+
+
 @login_required
 def own_servers(request):
     return render(request, 'sysop/index.html', {
