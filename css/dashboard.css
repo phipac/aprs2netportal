@@ -7,7 +7,7 @@ body {
   padding-top: 50px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   table td, table th {
     font-size: 11px;
   }
