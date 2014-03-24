@@ -67,9 +67,6 @@ class Server(models.Model):
     def __unicode__(self):
         return self.server_id or self.hostname
 
-    def disabled(self):
-        return self.deleted or self.out_of_service
-
     def fqdn(self):
         return '.'.join((self.hostname, str(self.domain)))
     fqdn.short_description = "FQDN"
@@ -79,7 +76,8 @@ class Server(models.Model):
             'host': self.hostname,
             'ipv4': self.ipv4,
             'ipv6': self.ipv6,
-            'disabled': self.disabled(),
+            'deleted': self.deleted,
+            'out_of_service': self.out_of_service,
         })
 
     def clean(self):
