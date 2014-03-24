@@ -31,12 +31,13 @@ class Server(models.Model):
 
     # Admin fields:
     owner = models.ForeignKey('auth.User', null=True, blank=True,
-        related_name="servers_owned")
+        related_name="servers_owned", help_text="Warning: changing this field "
+        "could affect your ability to administer this server record.")
     server_id = models.CharField(max_length=20, null=True, blank=True,
-        help_text="Polled from server")
+        help_text="Administrator use only.")
     hostname = models.CharField(max_length=63, validators=[hostname_validator],
-        help_text="Admin only")
-    domain = models.ForeignKey(Domain)
+        help_text="Administrator use only.")
+    domain = models.ForeignKey(Domain, help_text="Administrator use only.")
     deleted = models.BooleanField(blank=True)
 
     # Owner-editable fields:
@@ -47,8 +48,10 @@ class Server(models.Model):
     ipv6 = models.GenericIPAddressField(protocol="IPv6", null=True, blank=True,
         verbose_name="IPv6")
     #FIXME: is FloatField() appropriate for lat/lon?
-    latitude = models.FloatField(null=True, blank=True, help_text="Decimal")
-    longitude = models.FloatField(null=True, blank=True, help_text="Decimal")
+    latitude = models.FloatField(null=True, blank=True,
+        help_text="Decimal (e.g., 00.0000)")
+    longitude = models.FloatField(null=True, blank=True,
+        help_text="Decimal (e.g., 000.0000)")
     city = models.CharField(max_length=255, null=True, blank=True)
     country = models.CharField(max_length=255, null=True, blank=True,
         choices=sorted(ISO3166.items(), key=lambda country: country[1]))
@@ -62,7 +65,7 @@ class Server(models.Model):
     email_alerts = models.BooleanField(blank=True)
     authorized_sysops = models.ManyToManyField('auth.User', blank=True,
         related_name="authorized_servers",
-        help_text="Use this to allow other sysops to edit this server.")
+        help_text="Selected sysops will be allowed to edit this server record.")
 
     def __unicode__(self):
         return self.server_id or self.hostname
