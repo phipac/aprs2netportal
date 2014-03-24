@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load addcss from addcss %}
 {% block content %}
 
 <h1 class="page-header">{% if can_edit %}Edit {% endif %}{{ server }}</h1>
@@ -6,9 +7,6 @@
 <style>
 input[type="checkbox"].form-control {
     width: auto;
-}
-#id_authorized_sysops {
-    /*height: 300px;*/
 }
 </style>
 
@@ -21,10 +19,10 @@ input[type="checkbox"].form-control {
     {% if field.errors %}
         <div class="form-group has-error has-feedback">
             <label class="col-sm-2 control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-            <div class="col-sm-10">{{ field }}
+            <div class="col-sm-10">{{ field|addcss:"form-control" }}
                 <span class="glyphicon glyphicon-remove form-control-feedback"></span>
                 <p class="help-inline"><small>
-                    {% for error in field.errors %}{{ error }}{% endfor %}
+                    <span class="text-danger">{% for error in field.errors %}{{ error }}{% endfor %}</span>
                     {{ field.help_text }}
                 </small></p>
             </div>
@@ -32,7 +30,7 @@ input[type="checkbox"].form-control {
     {% else %}
         <div class="form-group">
             <label class="col-sm-2 control-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-            <div class="col-sm-10">{{ field }}
+            <div class="col-sm-10">{{ field|addcss:"form-control" }}
                 {% if field.help_text %}
                     <p class="help-inline"><small>{{ field.help_text }}</small></p>
                 {% endif %}

@@ -24,9 +24,6 @@ class SysopServerForm(ServerForm):
             self.fields['domain'].widget.attrs['disabled'] = 'disabled'
             self.fields['domain'].required = False
 
-        for key in self.fields:
-            self.fields[key].widget.attrs['class'] = "form-control"
-
         self.fields['authorized_sysops'].widget.attrs['size'] = "10"
         user_qs = User.objects.order_by('username')
         self.fields['authorized_sysops'].queryset = user_qs
