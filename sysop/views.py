@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from models import Rotate, Server
-from forms import SysopServerForm
+from forms import SysopServerForm, UserForm
 
 
 def servers_json(request):
@@ -74,4 +74,22 @@ def server_detail(request, server_id):
         'server': server,
         'form': form,
         'can_edit': can_edit,
+    })
+
+
+@login_required
+def user_detail(request):
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User settings saved.')
+            return HttpResponseRedirect('/sysop/')
+        else:
+            messages.warning(request, 'Form validation error. Details below.')
+    else:
+        form = UserForm(instance=request.user)
+
+    return render(request, 'registration/profile.html', {
+        'form': form,
     })

@@ -49,3 +49,9 @@ class SysopServerForm(ServerForm):
             return instance.domain
         else:
             return self.cleaned_data['domain']
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
