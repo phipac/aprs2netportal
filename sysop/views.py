@@ -1,9 +1,11 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import simplejson
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from models import Rotate, Server
+from forms import SysopServerForm
 
 
 def servers_json(request):
@@ -36,4 +38,30 @@ def own_servers(request):
 def all_servers(request):
     return render(request, 'sysop/index.html', {
         'all_servers':  Server.objects.exclude(deleted=True),
+    })
+
+
+@login_required
+def server_detail(request, server_id):
+    server = Server.objects.get(id=server_id)
+    form = SysopServerForm(instance=server)
+
+    if server.owner == request.user \
+    or request.user in server.authorized_sysops.all():
+        can_edit = True
+        if request.method == "POST":
+            form = SysopServerForm(request.POST, instance=server)
+            if form.is_valid():
+                form.save()
+                messages.success(request, '%s saved.' % server)
+                return HttpResponseRedirect('/sysop/')
+            else:
+                messages.warning(request, 'Form validation error. Details below.')
+    else:
+        can_edit = False
+
+    return render(request, 'sysop/edit_server.html', {
+        'server': server,
+        'form': form,
+        'can_edit': can_edit,
     })
