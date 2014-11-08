@@ -35,7 +35,7 @@ The uwsgi server will run under this user.
     (env)portal@t2dev:/var/www/aprs2netportal$
 
 # Install Python Dependencies
-    (env)portal@t2dev:/var/www/aprs2netportal$ pip install django south psycopg2
+    (env)portal@t2dev:/var/www/aprs2netportal$ pip install Django==1.6 south psycopg2
 Make sure to activate the virutalenv before running pip.
 
 # Database
@@ -45,17 +45,17 @@ Make sure to activate the virutalenv before running pip.
     createdb portal
     exit
 
-Edit `settings.py` to point to new database. Postgres uses the system user
+Edit `aprs2netportal/settings.py` to point to new database. Postgres uses the system user
 "portal" for authentication, so no password is needed.
 
 ## Initialize Database
-    (env)portal@t2dev:/var/www/aprs2netportal$ ./manage syncdb
-    (env)portal@t2dev:/var/www/aprs2netportal$ ./manage migrate
+    (env)portal@t2dev:/var/www/aprs2netportal$ ./manage.py syncdb
+    (env)portal@t2dev:/var/www/aprs2netportal$ ./manage.py migrate
 
 If you have a database backup, now would be a good time to import it.
 
 # Test Django
-    (env)portal@t2dev:/var/www/aprs2netportal$ ./manage runserver 0.0.0.0:8000
+    (env)portal@t2dev:/var/www/aprs2netportal$ ./manage.py runserver 0.0.0.0:8000
 
 Any errors reported?
 
