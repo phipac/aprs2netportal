@@ -3,7 +3,7 @@ These commands should work on Ubuntu, and likely Debian too. I apologize for not
 writing automation for this.
 
 # Install System Dependencies
-    sudo apt-get install nginx python-pip python-virtualenv python-dev git-core libq-dev postgresql postfix
+    sudo apt-get install nginx python-pip python-virtualenv python-dev git-core libpq-dev postgresql postfix
     sudo pip install uwsgi
 
 Note from [Django docs](https://docs.djangoproject.com/en/dev/howto/deployment/wsgi/uwsgi/):
