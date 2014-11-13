@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
@@ -74,6 +75,10 @@ class Server(models.Model):
         return '.'.join((self.hostname, str(self.domain)))
     fqdn.short_description = "FQDN"
 
+    def save(self, *args, **kwargs):
+        super(Server, self).save(*args, **kwargs)
+        cache.clear()
+
     def serialize(self):
         return (self.server_id, {
             'host': self.hostname,
@@ -114,6 +119,10 @@ class Rotate(models.Model):
     def fqdn(self):
         return '.'.join((self.hostname, str(self.domain)))
     fqdn.short_description = "FQDN"
+
+    def save(self, *args, **kwargs):
+        super(Rotate, self).save(*args, **kwargs)
+        cache.clear()
 
     def serialize(self):
         return (self.fqdn(), {

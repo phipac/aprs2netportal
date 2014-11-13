@@ -3,11 +3,13 @@ from django.utils import simplejson
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.decorators.cache import cache_page
 
 from models import Rotate, Server
 from forms import SysopServerForm, UserForm
 
 
+@cache_page(60 * 30)
 def servers_json(request):
     return HttpResponse(
         simplejson.dumps(dict([
@@ -17,6 +19,7 @@ def servers_json(request):
     )
 
 
+@cache_page(60 * 30)
 def rotates_json(request):
     return HttpResponse(
         simplejson.dumps(dict([
@@ -26,6 +29,7 @@ def rotates_json(request):
     )
 
 
+@cache_page(60 * 30)
 def server_list(request):
     aprs2_servers = Rotate.objects.get(
         hostname='rotate', domain__domain='aprs2.net').eligible
