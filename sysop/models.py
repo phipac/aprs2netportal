@@ -77,6 +77,8 @@ class Server(models.Model):
     def serialize(self):
         return (self.server_id, {
             'host': self.hostname,
+            'domain': str(self.domain),
+            'fqdn': self.fqdn(),
             'ipv4': self.ipv4,
             'ipv6': self.ipv6,
             'deleted': self.deleted,
@@ -117,6 +119,9 @@ class Rotate(models.Model):
         return (self.fqdn(), {
             'name': self.name,
             'description': self.description,
+            'host': self.hostname,
+            'domain': str(self.domain),
+            'fqdn': self.fqdn(),
             'servers': dict([s.serialize() for s in self.eligible.all()]),
         })
 
