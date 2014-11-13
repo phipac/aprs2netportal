@@ -28,4 +28,5 @@ urlpatterns = patterns('',
         'django.contrib.auth.views.password_reset_complete',
         name='password_reset_complete'),
     url(r'^APRServe2.txt$', 'sysop.views.server_list'),
+    url(r'^', include('sysop.urls')),
 )
