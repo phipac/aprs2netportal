@@ -4,12 +4,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_page, never_cache
 
 from models import Rotate, Server
 from forms import SysopServerForm, UserForm
 
 
+# cache rendered page on server, but send cache-control no-cache to client
+@never_cache
 @cache_page(60 * 30)
 def servers_json(request):
     return HttpResponse(
@@ -20,6 +22,7 @@ def servers_json(request):
     )
 
 
+@never_cache
 @cache_page(60 * 30)
 def rotates_json(request):
     return HttpResponse(
@@ -30,6 +33,7 @@ def rotates_json(request):
     )
 
 
+@never_cache
 @cache_page(60 * 30)
 def server_list(request):
     aprs2_servers = Rotate.objects.get(
