@@ -111,6 +111,13 @@ class Command(BaseCommand):
                     longitude, cardinal = old['longitude'].strip().split()
                     old['longitude'] = abs(float(longitude)) * CARDINAL_COEF[cardinal]
 
+            try:
+                float(old['latitude'])
+                float(old['longitude'])
+            except:
+                old['latitude'] = None
+                old['longitude'] = None
+
             rotates = [ROTATES[k] for k in (old['regional'], old['regional2'])]
 
             for key in ('regional', 'regional2'):
