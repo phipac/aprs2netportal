@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.contrib.auth.models import User
-from sysop.models import Rotate, Server
+from sysop.models import Rotate, Server, Domain
 
 import MySQLdb
 
@@ -116,6 +116,7 @@ class Command(BaseCommand):
 
             old['deleted'] = deleted
             old['out_of_service'] = out_of_service
+            old['domain'] = Domain.objects.get(domain='aprs2.net')
 
             server = Server(**old)
             server.save()
