@@ -1,5 +1,6 @@
+import json
+
 from django.http import HttpResponse, HttpResponseRedirect
-from django.utils import simplejson
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -12,7 +13,7 @@ from forms import SysopServerForm, UserForm
 @cache_page(60 * 30)
 def servers_json(request):
     return HttpResponse(
-        simplejson.dumps(dict([
+        json.dumps(dict([
             s.serialize() for s in Server.objects.all()
         ])),
         content_type="application/json",
@@ -22,7 +23,7 @@ def servers_json(request):
 @cache_page(60 * 30)
 def rotates_json(request):
     return HttpResponse(
-        simplejson.dumps(dict([
+        json.dumps(dict([
             r.serialize() for r in Rotate.objects.all()
         ])),
         content_type="application/json",
