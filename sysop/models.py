@@ -79,8 +79,8 @@ class Server(models.Model):
         super(Server, self).save(*args, **kwargs)
         cache.clear()
 
-    def serialize(self):
-        return (self.server_id, {
+    def serialize(self, with_email=False):
+        serialized = {
             'host': self.hostname,
             'domain': str(self.domain),
             'fqdn': self.fqdn(),
@@ -88,7 +88,11 @@ class Server(models.Model):
             'ipv6': self.ipv6,
             'deleted': self.deleted,
             'out_of_service': self.out_of_service,
-        })
+        }
+        if with_email:
+            serialized['email_alerts'] = self.email_alerts
+            serialized['email'] = self.owner and self.owner.email
+        return (self.server_id, serialized)
 
     def clean(self):
         # Don't allow saving a reserved name

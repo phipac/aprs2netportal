@@ -1,22 +1,32 @@
+from functools import wraps
 import json
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.cache import available_attrs, cache_page, never_cache
 
 from models import Rotate, Server
 from forms import SysopServerForm, UserForm
 
 
+def cache_page_vary_authenticated(timeout):
+    def decorator(view_func):
+        @wraps(view_func, assigned=available_attrs(view_func))
+        def _wrapped_view(request, *args, **kwargs):
+            return cache_page(timeout, key_prefix="_auth_%s_" % request.user.is_authenticated())(view_func)(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
+
+
 # cache rendered page on server, but send cache-control no-cache to client
 @never_cache
-@cache_page(60 * 30)
+@cache_page_vary_authenticated(60 * 30)
 def servers_json(request):
     return HttpResponse(
         json.dumps(dict([
-            s.serialize() for s in Server.objects.all()
+            s.serialize(with_email=request.user.is_authenticated()) for s in Server.objects.all()
         ])),
         content_type="application/json",
     )
