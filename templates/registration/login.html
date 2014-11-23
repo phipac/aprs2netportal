@@ -4,12 +4,33 @@
   <div class="col-md-4 col-md-offset-4" style="margin-top: 2em;">
     <form role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
     {% csrf_token %}
-      <div class="form-group">
+      {% for error in form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        {{ error }}
+      </div>
+      {% endfor %}
+      <div class="form-group{% if form.username.errors %} has-error{% endif %}">
         {{ form.username.label_tag }}
+        {% for error in form.username.errors %}
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          {{ error }}
+        </div>
+        {% endfor %}
         {{ form.username|addcss:"form-control" }}
       </div>
-      <div class="form-group">
+      <div class="form-group{% if form.password.errors %} has-error{% endif %}">
         {{ form.password.label_tag }}
+        {% for error in form.password.errors %}
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          {{ error }}
+        </div>
+        {% endfor %}
         {{ form.password|addcss:"form-control" }}
       </div>
       <button type="submit" class="btn btn-default">Login</button>
