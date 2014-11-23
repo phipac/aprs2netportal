@@ -91,7 +91,8 @@ class Server(models.Model):
         }
         if with_email:
             serialized['email_alerts'] = self.email_alerts
-            serialized['email'] = self.owner and self.owner.email
+            if self.email_alerts:
+                serialized['email'] = self.owner and self.owner.email
         return (self.server_id, serialized)
 
     def clean(self):
